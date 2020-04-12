@@ -146,7 +146,7 @@ router.post("/:id/comments", (req, res) => {
     // must return so that rest of the code doesn't cont. executing
     return res.status(400).json({ message: "Needs Content" });
   }
-
+  console.log(req.body);
   posts
     .insertComment(req.body)
     .then((comment) => {
