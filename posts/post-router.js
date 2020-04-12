@@ -1,6 +1,6 @@
 // must export in order for it to work!
 const express = require("express");
-const posts = require("./post-model");
+const posts = require("../data/db");
 
 // creates a mini express app
 const router = express.Router();
@@ -117,6 +117,44 @@ router.get("/:id/comments", (req, res) => {
       res.status(500).json({
         message: "ERROR finding post comments",
       });
+    });
+});
+
+// cannot have :id twice, must be unique id's
+router.get("/:id/comments/:commentId", (req, res) => {
+  posts
+    .findCommentById(req.params.commentId)
+    //   must check if exists
+    .then((comment) => {
+      if (comment) {
+        res.status(200).json(comment);
+      } else {
+        res.status(404).json({ message: "Comment NOT found" });
+      }
+    })
+    .catch(() => {
+      res.status(500).json({
+        message: "ERROR finding comment ID",
+      });
+    });
+});
+
+router.post("/:id/comments", (req, res) => {
+  // check value before create
+  // if it doesn't exist return an error
+  if (!req.body.text) {
+    // must return so that rest of the code doesn't cont. executing
+    return res.status(400).json({ message: "Needs Content" });
+  }
+
+  posts
+    .insertComment(req.body)
+    .then((comment) => {
+      res.status(201).json(comment);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "ERROR creating comment" });
     });
 });
 
