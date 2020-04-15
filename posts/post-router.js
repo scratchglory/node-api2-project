@@ -125,11 +125,11 @@ router.get("/:id/comments/:commentId", (req, res) => {
   posts
     .findCommentById(req.params.commentId)
     //   must check if exists
-    .then((comment) => {
-      if (comment) {
-        res.status(200).json(comment);
-      } else {
+    .then((comments) => {
+      if (comments.length === 0) {
         res.status(404).json({ message: "Comment NOT found" });
+      } else {
+        res.status(200).json(comments);
       }
     })
     .catch(() => {
